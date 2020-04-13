@@ -45,11 +45,15 @@ func main() {
 	flag.Parse()
 
 	args := flag.Args()
+
+	// Default to CWD to build tree
 	var overlayP = "."
 	if len(args) > 0 {
 		overlayP = args[0]
 	}
 
+	// Setup loader for kustomize overlay
+	// This will fail if the overlay path isn't a valid kustomize base
 	fSys := fs.MakeFsOnDisk()
 	ldr, err := loader.NewLoader(
 		loader.RestrictionRootOnly,
@@ -60,6 +64,7 @@ func main() {
 		log.Fatal(err)
 	}
 
+	// Determine the path of relative-base for trimming its prefix
 	if *relativeBase != "" {
 		crb, _, err := fSys.CleanedAbs(*relativeBase)
 		if err != nil {
