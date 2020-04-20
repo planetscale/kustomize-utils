@@ -62,7 +62,12 @@ func (rt *ResourceTree) loadResources(ldr ifc.Loader, branch treeprint.Tree) err
 
 	trimmedRoot := strings.TrimPrefix(ldr.Root(), rt.relativeBase)
 
-	for _, path := range kb.Resources {
+	bases := []string{}
+	bases = append(bases, kb.Generators...)
+	bases = append(bases, kb.Resources...)
+	bases = append(bases, kb.Transformers...)
+
+	for _, path := range bases {
 		rldr, err := ldr.New(path)
 		if err != nil {
 			// err means it's a resource not a base
